@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnfografik: Gölge Diyarın Stratejik Pazar Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 40vh;
+            max-height: 400px;
+        }
+        .flowchart-item {
+            border-color: #6675FF;
+            color: #E5E7EB;
+        }
+        .flowchart-arrow {
+            color: #00E0FF;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- 
+        Narrative Plan:
+        1.  Header: Introduce the "market" of Karonya (Menzoberranzan).
+        2.  Market Size & Demographics: Total population and social strata breakdown.
+        3.  Competitive Analysis: Power comparison of the main noble houses.
+        4.  Case Study (SWOT): SWOT analysis for House Do'Urden.
+        5.  Process Flow: The stages of a strategic house assault (Do'Urden vs. De'Vir).
+        6.  Technology Penetration: The influence and power of different disciplines (Warrior, Wizard, Priestess).
+        7.  Future Outlook: A projection based on the emergence of a disruptive element (Kael/Drizzt).
+
+        Visualization Plan:
+        - Market Size: Single Big Number (HTML/Tailwind, No SVG). Goal: Inform.
+        - Demographics: Donut Chart (Chart.js/Canvas, No SVG). Goal: Compare/Composition.
+        - Key Players: Horizontal Bar Chart (Chart.js/Canvas, No SVG). Goal: Compare.
+        - SWOT Analysis: 2x2 Grid (HTML/Tailwind, No SVG). Goal: Organize.
+        - Attack Flowchart: Styled Divs (HTML/Tailwind, No SVG/Mermaid). Goal: Organize.
+        - Discipline Influence: Radar Chart (Chart.js/Canvas, No SVG). Goal: Compare.
+        - Power Projection: Line Chart (Chart.js/Canvas, No SVG). Goal: Change.
+
+        Color Palette: "Energetic & Playful" (#00F0B5, #00E0FF, #6675FF, #A566FF, #FFC250) on a dark background.
+
+        Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All visuals are rendered via Canvas or structured HTML/CSS with Tailwind.
+    -->
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-black text-white mb-2">Gölge Diyarın Stratejik Pazar Analizi</h1>
+            <p class="text-lg text-gray-400">Karonya (Menzoberranzan) Şehrindeki Güç Dinamikleri ve Endüstri Trendleri</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <div class="md:col-span-2 lg:col-span-3 bg-gray-900/50 rounded-2xl p-6 shadow-2xl border border-gray-700">
+                <h2 class="text-2xl font-bold text-white mb-3">Pazara Genel Bakış</h2>
+                <p class="text-gray-400">
+                    Karonya pazarı, acımasız rekabet, sürekli entrika ve katı bir matriarkal hiyerarşi ile tanımlanan, yüksek riskli ve yüksek ödüllü bir ekosistemdir. Pazarın temel itici gücü, Örümcek Ana'nın lütfunu kazanarak güç ve statü elde etmektir. Oyuncular (Soylu Evler), pazar paylarını artırmak için sürekli olarak stratejik hamleler, suikastlar ve topyekûn savaşlar yürütürler. Bu analiz, pazarın mevcut durumunu ve gelecekteki potansiyelini incelemektedir.
+                </p>
+            </div>
+
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700 flex flex-col justify-center items-center text-center">
+                <h3 class="text-xl font-bold text-white mb-2">Toplam Pazar Büyüklüğü</h3>
+                <p class="text-7xl font-black text-[#00E0FF]">20,000</p>
+                <p class="text-gray-400 mt-2">Aktif Üye (Gölge Elfi Nüfusu)</p>
+                <p class="text-sm text-gray-500 mt-4">Pazar, on binlerce köle ve alt ırk tarafından desteklenen, sınırlı ama son derece rekabetçi bir oyuncu havuzuna sahiptir.</p>
+            </div>
+
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700">
+                <h3 class="text-xl font-bold text-white mb-4 text-center">Toplumsal Segmentasyon</h3>
+                <div class="chart-container mx-auto" style="max-width: 350px;">
+                    <canvas id="demographicsChart"></canvas>
+                </div>
+                 <p class="text-sm text-gray-500 mt-4 text-center">Pazar, gücün Ana Rahibeler ve soylu kadınlarda toplandığı katı bir kast sistemine dayanmaktadır. Savaşçılar ve Büyücüler, evlerin operasyonel gücünü oluşturur.</p>
+            </div>
+            
+            <div class="lg:col-span-1 md:col-span-2 bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700">
+                 <h3 class="text-xl font-bold text-white mb-4">Ana Oyuncuların Güç Endeksi</h3>
+                 <div class="chart-container">
+                    <canvas id="housePowerChart"></canvas>
+                </div>
+                 <p class="text-sm text-gray-500 mt-4">Güç, askeri kapasite, büyü yeteneği ve siyasi etkinin birleşiminden oluşur. Baenre Evi, uzun süredir pazar lideri konumundadır, ancak Do'Urden gibi yükselen oyuncular dengeyi bozma potansiyeline sahiptir.</p>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-3 bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700">
+                <h3 class="text-2xl font-bold text-white mb-4 text-center">Vaka Analizi: Do'Urden Evi'nin GZFT Profili</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-green-900/30 p-4 rounded-lg border border-green-500">
+                        <h4 class="font-bold text-green-400 mb-2">🟢 Güçlü Yönler</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            <li>Elit Silah Ustası (Darius)</li>
+                            <li>Yüksek potansiyelli yeni nesil yetenek (Kael)</li>
+                            <li>Agresif ve hırslı liderlik (Akasha & Vael)</li>
+                            <li>Yüksek askeri disiplin</li>
+                        </ul>
+                    </div>
+                    <div class="bg-red-900/30 p-4 rounded-lg border border-red-500">
+                        <h4 class="font-bold text-red-400 mb-2">🔴 Zayıf Yönler</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            <li>İç çatışmalar ve sadakat sorunları</li>
+                            <li>Geleneklere aykırı etik değerler (Kael & Darius)</li>
+                            <li>Ana Rahibe'nin Lloth'un gözündeki konumu belirsiz</li>
+                            <li>Üst düzey büyücü eksikliği</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-900/30 p-4 rounded-lg border border-blue-500">
+                        <h4 class="font-bold text-blue-400 mb-2">🔵 Fırsatlar</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            <li>Gözden düşmüş evlere (De'Vir) saldırarak pazar payı kazanma</li>
+                            <li>Yükselen askeri güçle üst sıralara tırmanma</li>
+                            <li>Kael'in yeteneklerini stratejik olarak kullanma</li>
+                            <li>Diğer evlerle geçici ittifaklar kurma</li>
+                        </ul>
+                    </div>
+                    <div class="bg-yellow-900/30 p-4 rounded-lg border border-yellow-500">
+                        <h4 class="font-bold text-yellow-400 mb-2">🟡 Tehditler</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            <li>Daha güçlü evlerin (Baenre) misillemesi</li>
+                            <li>İç ihanet ve suikast girişimleri</li>
+                            <li>Lloth'un lütfunu kaybetme riski</li>
+                            <li>Kael'in öngörülemez doğası</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-2 lg:col-span-3 bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700">
+                <h3 class="text-xl font-bold text-white mb-6 text-center">Stratejik Hamle Akışı: Bir Evi Yok Etme Süreci</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center">
+                    <div class="flowchart-item p-3 border-2 border-dashed rounded-lg min-w-[150px]">
+                        <p class="font-semibold">1. İstihbarat & Planlama</p>
+                        <p class="text-xs text-gray-400">Hedef evin zayıflıkları belirlenir.</p>
+                    </div>
+                    <div class="text-2xl flowchart-arrow transform md:-translate-y-4 rotate-90 md:rotate-0">➔</div>
+                     <div class="flowchart-item p-3 border-2 border-dashed rounded-lg min-w-[150px]">
+                        <p class="font-semibold">2. Lloth'un Onayı</p>
+                        <p class="text-xs text-gray-400">Ana Rahibe, tanrıçanın lütfunu arar.</p>
+                    </div>
+                     <div class="text-2xl flowchart-arrow transform md:-translate-y-4 rotate-90 md:rotate-0">➔</div>
+                     <div class="flowchart-item p-3 border-2 border-dashed rounded-lg min-w-[150px]">
+                        <p class="font-semibold">3. Gizli Saldırı</p>
+                        <p class="text-xs text-gray-400">Topyekûn ve ani baskın yapılır.</p>
+                    </div>
+                     <div class="text-2xl flowchart-arrow transform md:-translate-y-4 rotate-90 md:rotate-0">➔</div>
+                     <div class="flowchart-item p-3 border-2 border-dashed rounded-lg min-w-[150px]">
+                        <p class="font-semibold">4. Yok Etme</p>
+                        <p class="text-xs text-gray-400">Hedef evin tüm soyluları öldürülür.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700">
+                 <h3 class="text-xl font-bold text-white mb-4 text-center">Disiplinlerin Etki Analizi</h3>
+                <div class="chart-container mx-auto" style="max-width: 400px;">
+                    <canvas id="disciplineRadarChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">Rahibelik, mutlak siyasi gücü elinde tutarken, Savaşçılık doğrudan askeri etkiyi, Büyücülük ise stratejik ve yıkıcı potansiyeli temsil eder.</p>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-2 bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-700">
+                 <h3 class="text-xl font-bold text-white mb-4">Pazar Konumu Projeksiyonu: Do'Urden Evi</h3>
+                 <div class="chart-container">
+                    <canvas id="powerProjectionChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">Do'Urden Evi, De'Vir Evi'ni başarıyla yok ettikten sonra pazar konumunda önemli bir sıçrama yaşadı. Kael'in (Oyuncu Karakteri) yetenekleri ve Darius'un tecrübesiyle, önümüzdeki dönemde daha agresif bir büyüme göstermesi ve pazarın üst sıralarını zorlaması beklenmektedir. Ancak iç istikrarsızlık en büyük risk faktörüdür.</p>
+            </div>
+            
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const FONT_COLOR = '#E5E7EB';
+            const GRID_COLOR = 'rgba(255, 255, 255, 0.1)';
+
+            const palette = {
+                vibrantGreen: '#00F0B5',
+                cyan: '#00E0FF',
+                indigo: '#6675FF',
+                purple: '#A566FF',
+                gold: '#FFC250'
+            };
+            
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+            
+            const wrapLabel = (label) => {
+                const maxLength = 16;
+                if (label.length <= maxLength) return label;
+                
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxLength && currentLine.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = '';
+                    }
+                    currentLine += (currentLine ? ' ' : '') + word;
+                });
+                lines.push(currentLine);
+                return lines;
+            };
+
+            // 1. Demographics Chart (Donut)
+            const demographicsCtx = document.getElementById('demographicsChart').getContext('2d');
+            new Chart(demographicsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ana Rahibeler', 'Diğer Soylular', 'Savaşçılar', 'Halk', 'Köleler'],
+                    datasets: [{
+                        label: 'Toplumsal Dağılım',
+                        data: [5, 15, 30, 20, 30],
+                        backgroundColor: [palette.purple, palette.indigo, palette.gold, palette.cyan, palette.vibrantGreen],
+                        borderColor: '#1F2937',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: FONT_COLOR,
+                                boxWidth: 15,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: { title: tooltipTitleCallback }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+
+            // 2. House Power Chart (Horizontal Bar)
+            const housePowerCtx = document.getElementById('housePowerChart').getContext('2d');
+            const houseLabels = ["Baenre Evi", "Do'Urden Evi", "De'Vir Evi (Düşüş Öncesi)", "Hun'ett Evi", "Mizzrym Evi", "Fey-Branche Evi"];
+            const wrappedHouseLabels = houseLabels.map(wrapLabel);
+
+            new Chart(housePowerCtx, {
+                type: 'bar',
+                data: {
+                    labels: wrappedHouseLabels,
+                    datasets: [{
+                        label: 'Tahmini Güç Endeksi',
+                        data: [95, 75, 60, 58, 55, 52],
+                        backgroundColor: [
+                           palette.purple, palette.indigo, palette.vibrantGreen, 
+                           palette.cyan, palette.gold, 'rgba(165, 102, 255, 0.5)'
+                        ],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: GRID_COLOR },
+                            ticks: { color: FONT_COLOR }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: FONT_COLOR }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+
+            // 3. Discipline Radar Chart
+            const disciplineCtx = document.getElementById('disciplineRadarChart').getContext('2d');
+            new Chart(disciplineCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Siyasi Etki', 'Askeri Güç', 'Stratejik Potansiyel', 'Entrika Yeteneği', 'Ekonomik Güç'],
+                    datasets: [
+                        {
+                            label: 'Rahibelik',
+                            data: [9, 5, 7, 9, 8],
+                            fill: true,
+                            backgroundColor: 'rgba(165, 102, 255, 0.2)',
+                            borderColor: palette.purple,
+                            pointBackgroundColor: palette.purple,
+                        }, {
+                            label: 'Savaşçılık',
+                            data: [4, 9, 6, 5, 6],
+                            fill: true,
+                            backgroundColor: 'rgba(255, 194, 80, 0.2)',
+                            borderColor: palette.gold,
+                            pointBackgroundColor: palette.gold,
+                        }, {
+                             label: 'Büyücülük',
+                            data: [5, 6, 9, 7, 7],
+                            fill: true,
+                            backgroundColor: 'rgba(0, 224, 255, 0.2)',
+                            borderColor: palette.cyan,
+                            pointBackgroundColor: palette.cyan,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: GRID_COLOR },
+                            grid: { color: GRID_COLOR },
+                            pointLabels: {
+                                color: FONT_COLOR,
+                                font: { size: 12 }
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: FONT_COLOR
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                             labels: { color: FONT_COLOR }
+                        },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+            
+            // 4. Power Projection Chart (Line)
+            const projectionCtx = document.getElementById('powerProjectionChart').getContext('2d');
+            new Chart(projectionCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Yıl -2', 'Yıl -1', 'De\'Vir Saldırısı', 'Mevcut Durum', 'Yıl +1 (Tahmin)', 'Yıl +2 (Tahmin)'],
+                    datasets: [{
+                        label: 'Do\'Urden Evi Güç Skorlaması',
+                        data: [55, 60, 75, 75, 82, 90],
+                        borderColor: palette.indigo,
+                        backgroundColor: 'rgba(102, 117, 255, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                           beginAtZero: false,
+                           min: 50,
+                           grid: { color: GRID_COLOR },
+                           ticks: { color: FONT_COLOR }
+                        },
+                        x: {
+                           grid: { color: GRID_COLOR },
+                           ticks: { color: FONT_COLOR }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                             labels: { color: FONT_COLOR }
+                        },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

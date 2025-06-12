@@ -1,0 +1,5 @@
+# HATA ÇÖZÜMLERİ
+
+| Proje Adı | Tarih | Hata Açıklaması | Çözüm |
+|---|---|---|---|
+| | | | | 
