@@ -69,6 +69,8 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
             z-index: 10;
         }
         #character-name {
@@ -116,6 +118,49 @@
             background-color: #5a099a;
             transform: translateY(0);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        #ui-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 20;
+        }
+        #ui-buttons button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        #log-modal {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            overflow-y: auto;
+            z-index: 30;
+        }
+        #log-modal.hidden {
+            display: none;
+        }
+        #log-content {
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        #close-log {
+            align-self: flex-end;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
         }
         #version-info {
             position: absolute;
@@ -167,7 +212,17 @@
             <p id="dialogue-text"></p>
             <div id="choices-container"></div>
         </div>
+        <div id="ui-buttons">
+            <button id="save-btn">Kaydet</button>
+            <button id="load-btn">Yükle</button>
+            <button id="log-btn">Geçmiş</button>
+        </div>
+        <div id="log-modal" class="hidden">
+            <div id="log-content"></div>
+            <button id="close-log">Kapat</button>
+        </div>
         <div id="version-info">Gölge Diyarın Şafak Söken Yüreği v1.0</div>
+        <audio id="bg-music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c58d09b0e.mp3?filename=fairy-16848.mp3" loop></audio>
     </div>
 
     <script>
@@ -521,36 +576,51 @@
             }
         };
 
-        let currentSceneId = "start";
-        let playerStats = {
-            merhametli_points: 0,
-            acimasiz_points: 0,
-            denge_points: 0
-        };
+       let currentSceneId = "start";
+       let playerStats = {
+           merhametli_points: 0,
+           acimasiz_points: 0,
+           denge_points: 0
+       };
+        let history = [];
 
-        const sceneBackground = document.getElementById("scene-background");
-        const characterPortrait = document.getElementById("character-portrait");
-        const characterName = document.getElementById("character-name");
-        const dialogueText = document.getElementById("dialogue-text");
-        const choicesContainer = document.getElementById("choices-container");
+       const sceneBackground = document.getElementById("scene-background");
+       const characterPortrait = document.getElementById("character-portrait");
+       const characterName = document.getElementById("character-name");
+       const dialogueText = document.getElementById("dialogue-text");
+        const dialogueBox = document.getElementById("dialogue-box");
+       const choicesContainer = document.getElementById("choices-container");
+        const saveBtn = document.getElementById("save-btn");
+        const loadBtn = document.getElementById("load-btn");
+        const logBtn = document.getElementById("log-btn");
+        const logModal = document.getElementById("log-modal");
+        const logContent = document.getElementById("log-content");
+        const closeLog = document.getElementById("close-log");
+        const bgMusic = document.getElementById("bg-music");
 
-        function loadScene(sceneId) {
-            const scene = gameData[sceneId];
-            if (!scene) {
-                loadScene("end_trajik");
-                return;
-            }
+       function loadScene(sceneId) {
+           const scene = gameData[sceneId];
+           if (!scene) {
+               loadScene("end_trajik");
+               return;
+           }
 
-            currentSceneId = sceneId;
+           currentSceneId = sceneId;
+            dialogueBox.style.opacity = 0;
+            setTimeout(() => {
+                sceneBackground.style.backgroundImage = `url('${scene.background}')`;
+                characterName.textContent = scene.character;
+                dialogueText.textContent = scene.dialogue;
 
-            sceneBackground.style.backgroundImage = `url('${scene.background}')`;
-            characterName.textContent = scene.character;
-            dialogueText.textContent = scene.dialogue;
+                characterPortrait.innerHTML = scene.portrait ? `<img src="${scene.portrait}" alt="${scene.character}" class="w-full h-full object-cover rounded-full border-4 border-gray-700 shadow-lg">` : '';
+                characterPortrait.style.display = scene.portrait ? 'block' : 'none';
 
-            characterPortrait.innerHTML = scene.portrait ? `<img src="${scene.portrait}" alt="${scene.character}" class="w-full h-full object-cover rounded-full border-4 border-gray-700 shadow-lg">` : '';
-            characterPortrait.style.display = scene.portrait ? 'block' : 'none';
+                dialogueBox.style.opacity = 1;
+            }, 200);
 
-            choicesContainer.innerHTML = "";
+            history.push(`${scene.character}: ${scene.dialogue}`);
+
+           choicesContainer.innerHTML = "";
 
             if (scene.choices && scene.choices.length > 0) {
                 scene.choices.forEach((choice, index) => {
@@ -575,9 +645,9 @@
             }
         }
 
-        function makeChoice(choiceIndex) {
-            const scene = gameData[currentSceneId];
-            const chosen = scene.choices[choiceIndex];
+       function makeChoice(choiceIndex) {
+           const scene = gameData[currentSceneId];
+           const chosen = scene.choices[choiceIndex];
 
             if (chosen.effect) {
                 if (chosen.effect.path === "merhametli_point") {
@@ -589,10 +659,33 @@
                 }
             }
 
-            if (chosen.nextScene.startsWith("end_")) {
-                loadEndingScene();
-            } else {
-                loadScene(chosen.nextScene);
+           if (chosen.nextScene.startsWith("end_")) {
+               loadEndingScene();
+           } else {
+               loadScene(chosen.nextScene);
+           }
+       }
+
+        function updateLog() {
+            logContent.innerHTML = history.map(h => `<p>${h}</p>`).join("");
+        }
+
+        function saveGame() {
+            localStorage.setItem('gameSave', JSON.stringify({
+                currentSceneId,
+                playerStats,
+                history
+            }));
+        }
+
+        function loadGame() {
+            const data = localStorage.getItem('gameSave');
+            if (data) {
+                const obj = JSON.parse(data);
+                playerStats = obj.playerStats;
+                history = obj.history || [];
+                loadScene(obj.currentSceneId);
+                updateLog();
             }
         }
 
@@ -621,16 +714,24 @@
             loadScene(finalEnding);
         }
 
-        function startGame() {
-            playerStats = {
-                merhametli_points: 0,
-                acimasiz_points: 0,
-                denge_points: 0
-            };
+       function startGame() {
+           playerStats = {
+               merhametli_points: 0,
+               acimasiz_points: 0,
+               denge_points: 0
+           };
+            history = [];
             loadScene("start");
-        }
+            bgMusic.play().catch(()=>{});
+       }
 
-        document.addEventListener("DOMContentLoaded", startGame);
+        document.addEventListener("DOMContentLoaded", () => {
+            startGame();
+            saveBtn.addEventListener('click', saveGame);
+            loadBtn.addEventListener('click', loadGame);
+            logBtn.addEventListener('click', () => { logModal.classList.remove('hidden'); updateLog(); });
+            closeLog.addEventListener('click', () => logModal.classList.add('hidden'));
+        });
     </script>
 </body>
 </html>
